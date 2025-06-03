@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(
-        labwork5
+        array17d3
         VERSION 1.0
-        DESCRIPTION "C++ Year 2023 labwork5"
         LANGUAGES CXX
 )
 

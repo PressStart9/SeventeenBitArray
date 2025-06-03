@@ -14,9 +14,11 @@ class ThreeDimensionalArray {
  public:
   ThreeDimensionalArray(size_t x, size_t y, size_t z);
   ThreeDimensionalArray(const ThreeDimensionalArray& arr);
+  ThreeDimensionalArray(ThreeDimensionalArray&& arr) noexcept;
   ~ThreeDimensionalArray();
 
   ThreeDimensionalArray& operator=(const ThreeDimensionalArray& arr);
+  ThreeDimensionalArray& operator=(ThreeDimensionalArray&& arr) noexcept;
 
   uint32_t GetValue(size_t x, size_t y, size_t z) const;
   void SetValue(size_t x, size_t y, size_t z, int value);
@@ -94,4 +96,4 @@ std::ostream& operator<<(std::ostream& st, const ThreeDimensionalArray::TdaViewY
 std::ostream& operator<<(std::ostream& st, const ThreeDimensionalArray& arr);
 std::istream& operator>>(std::istream& st, ThreeDimensionalArray::TdaViewZ arr);
 
-} // ThreeDimensionalArray
+} // three_dimensional_array

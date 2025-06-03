@@ -11,7 +11,7 @@
 Пример использования:
 
 ```cpp
-YourClassName arr = YourClassName::make_array(10, 2, 30);
+ThreeDimensionalArray arr = ThreeDimensionalArray::make_array(10, 2, 30);
 
 arr[4][1][2] = 100500;
 std::cout << arr[4][1][2];

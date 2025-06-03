@@ -1,5 +1,7 @@
 #include "ThreeDimensionalArray.h"
 
+#include <utility>
+
 namespace three_dimensional_array {
 
 ThreeDimensionalArray::TdaViewX::TdaViewX(ThreeDimensionalArray& arr, size_t x)
@@ -31,16 +33,20 @@ ThreeDimensionalArray::TdaViewZ& ThreeDimensionalArray::TdaViewZ::operator=(int 
 }
 
 ThreeDimensionalArray::ThreeDimensionalArray(size_t x, size_t y, size_t z) : size_x_(x), size_y_(y), size_z_(z) {
-  bytes_ = new uint8_t[(x * y * z * 17) / 8 + 1] {0};
+  bytes_ = new uint8_t[(x * y * z * kBitsCount_) / kByteSize_ + 1] {0};
 }
 
 ThreeDimensionalArray::ThreeDimensionalArray(const ThreeDimensionalArray& arr)
     : size_x_(arr.size_x_), size_y_(arr.size_y_), size_z_(arr.size_z_) {
-  size_t line_size = (size_x_ * size_y_ * size_z_ * 17) / 8 + 1;
+  size_t line_size = (size_x_ * size_y_ * size_z_ * kBitsCount_) / kByteSize_ + 1;
   bytes_ = new uint8_t[line_size];
   for (size_t i = 0; i < line_size; ++i) {
     bytes_[i] = arr.bytes_[i];
   }
+}
+
+ThreeDimensionalArray::ThreeDimensionalArray(ThreeDimensionalArray&& arr) noexcept
+    : size_x_(std::exchange(arr.size_x_, 0)), size_y_(std::exchange(arr.size_y_, 0)), size_z_(std::exchange(arr.size_z_, 0)), bytes_(std::exchange(arr.bytes_, nullptr)) {
 }
 
 uint32_t ThreeDimensionalArray::GetValue(size_t x, size_t y, size_t z) const {
@@ -159,12 +165,13 @@ ThreeDimensionalArray ThreeDimensionalArray::operator-(const ThreeDimensionalArr
 ThreeDimensionalArray::~ThreeDimensionalArray() {
   delete[] bytes_;
 }
-ThreeDimensionalArray& ThreeDimensionalArray::operator=(const ThreeDimensionalArray &arr) {
+
+ThreeDimensionalArray& ThreeDimensionalArray::operator=(const ThreeDimensionalArray& arr) {
   delete[] bytes_;
   size_x_ = arr.size_x_;
   size_y_ = arr.size_y_;
   size_z_ = arr.size_z_;
-  size_t line_size = (size_x_ * size_y_ * size_z_ * 17) / 8 + 1;
+  size_t line_size = (size_x_ * size_y_ * size_z_ * kBitsCount_) / kByteSize_ + 1;
   bytes_ = new uint8_t[line_size];
   for (size_t i = 0; i < line_size; ++i) {
     bytes_[i] = arr.bytes_[i];
@@ -172,4 +179,12 @@ ThreeDimensionalArray& ThreeDimensionalArray::operator=(const ThreeDimensionalAr
   return *this;
 }
 
-}  // namespace three_dimensional_array
+ThreeDimensionalArray& ThreeDimensionalArray::operator=(ThreeDimensionalArray&& arr) noexcept {
+  size_x_ = std::exchange(arr.size_x_, 0);
+  size_y_ = std::exchange(arr.size_y_, 0);
+  size_z_ = std::exchange(arr.size_z_, 0);
+  bytes_ = std::exchange(arr.bytes_, nullptr);
+  return *this;
+}
+
+}  // three_dimensional_array
